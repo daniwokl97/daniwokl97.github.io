@@ -253,13 +253,18 @@ const isVideoUrl = (url) => url && (url.includes('youtube.com') || url.includes(
 .project-images {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
 }
 
 .project-image {
-  width: 100%;
+  width: auto;
+  max-width: 75%;
+  height: auto;
   border-radius: 8px;
   display: block;
+  object-fit: contain;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .project-videos {
