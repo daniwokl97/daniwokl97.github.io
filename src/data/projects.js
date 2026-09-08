@@ -1,5 +1,40 @@
 export const projects = [
   {
+    id: 'reachymini',
+    title: 'Combating Procrastination with Reachy Mini',
+    subtitle: 'Evaluating Persuasive Communication Modalities',
+    category: 'Human-Robot Interaction',
+    tags: ['Python', 'YOLOv8', 'OpenCV', 'Reachy Mini', 'HRI', 'Persuasive Technology', 'User Study'],
+    year: 2026,
+    date: '2026-07-18',
+    cover: '/projects/reachymini/cover.jpg',
+    description: `Combating Procrastination with Reachy Mini is a research project on human-robot interaction that evaluates the desktop robot Reachy Mini as a persuasive intervention against smartphone distraction. Digital blockers are easily bypassed; a physical robot on the desk offers a persistent, off-screen trigger for behavior change.
+
+The system detects when a smartphone is picked up from the desk and lets Reachy Mini react with one of three behavioral modes: tech, humanoid, and human. In an online, within-subjects video study (N = 21), participants rated the robot's persuasive appeal and social presence.
+
+The results indicate that the tech and human modes were often perceived as too alarming or overly intrusive, leading users to favor the non-verbal, emotional humanoid mode as a non-disruptive companion. Persuasive robots seem most effective when their social cues are carefully balanced, using organic movements and expressive non-verbal sounds to gently steer attention away from distraction.`,
+    role: `RESEARCH | SYSTEM DEVELOPMENT | USER STUDY | SOUND DESIGN
+
+Within the project, I designed and implemented the three persuasive interaction modes of Reachy Mini, shaping how the robot signals, suggests, and emotionally reacts to the user's smartphone behavior. I developed the smartphone detection pipeline using YOLOv8 and OpenCV and coupled it with the robot's responsive behavior logic.
+
+Beyond the system, I designed the study and recruited participants for the online, within-subjects video evaluation, analyzing perceived persuasiveness and personality across modalities — showing that a carefully balanced, humanoid companion is preferred over neither alarm nor intrusiveness.`,
+    tools: ['Python', 'YOLOv8', 'OpenCV', 'Reachy Mini', 'ElevenLabs', 'DaVinci Resolve'],
+    images: [
+      '/projects/reachymini/SmartphoneDetection.png',
+      '/projects/reachymini/communication.png',
+      '/projects/reachymini/ocean_boxplot.png',
+      '/projects/reachymini/HRIES.png',
+    ],
+    videos: [
+      { url: '/projects/reachymini/Tech.mp4', label: 'Tech Mode – systematic, utilitarian, no social cues' },
+      { url: '/projects/reachymini/Humanoid.MP4', label: 'Humanoid Mode – organic movements and expressive non-verbal sounds' },
+      { url: '/projects/reachymini/Human.MP4', label: 'Human Mode – verbal communication, natural language' },
+    ],
+    status: 'Student Research Project',
+    behanceUrl: '',
+    externalLinks: [],
+  },
+  {
     id: 'ambienceai',
     title: 'AmbienceAI',
     subtitle: 'AI-Driven Soundscape Application',
