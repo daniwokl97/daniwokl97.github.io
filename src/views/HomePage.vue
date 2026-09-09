@@ -19,7 +19,7 @@ const profile = {
 
 const contact = [
   { label: 'Email', value: 'dani_kling@web.de' },
-  { label: 'Address', value: 'Böblinger Straße 168, 70199 Stuttgart' },
+  { label: 'Address', value: 'Böblinger Straße, 70199 Stuttgart' },
 ]
 
 const skills = [
