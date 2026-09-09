@@ -8,7 +8,7 @@ const activeTab = ref('projects')
 
 const filteredProjects = computed(() => {
   if (activeCategory.value === 'All') return projects
-  return projects.filter(p => p.category === activeCategory.value)
+  return projects.filter(p => p.categories.includes(activeCategory.value))
 })
 
 const profile = {

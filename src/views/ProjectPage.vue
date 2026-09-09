@@ -189,9 +189,11 @@ onUnmounted(() => {
             <span class="meta-label">Year</span>
             <span class="meta-value">{{ project.year }}</span>
           </div>
-          <div class="meta-item" v-if="project.category">
-            <span class="meta-label">Category</span>
-            <span class="meta-value">{{ project.category }}</span>
+          <div class="meta-item" v-if="project.categories && project.categories.length">
+            <span class="meta-label">Categories</span>
+            <div class="meta-chips">
+              <span v-for="cat in project.categories" :key="cat" class="meta-chip">{{ cat }}</span>
+            </div>
           </div>
           <div class="meta-item" v-if="project.status">
             <span class="meta-label">Status</span>
@@ -213,9 +215,11 @@ onUnmounted(() => {
             <span class="meta-label">Year</span>
             <span class="meta-value">{{ project.year }}</span>
           </div>
-          <div class="meta-item" v-if="project.category">
-            <span class="meta-label">Category</span>
-            <span class="meta-value">{{ project.category }}</span>
+          <div class="meta-item" v-if="project.categories && project.categories.length">
+            <span class="meta-label">Categories</span>
+            <div class="meta-chips">
+              <span v-for="cat in project.categories" :key="cat" class="meta-chip">{{ cat }}</span>
+            </div>
           </div>
           <div class="meta-item" v-if="project.status">
             <span class="meta-label">Status</span>
@@ -503,6 +507,22 @@ onUnmounted(() => {
   font-size: 15px;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
+}
+
+.meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.meta-chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .project-hero.no-cover .hero-content {
