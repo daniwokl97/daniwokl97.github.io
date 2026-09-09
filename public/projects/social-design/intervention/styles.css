@@ -1,0 +1,408 @@
+/* ============================================
+   Social Design: Die Rush-Hour des Lebens
+   Stylesheet
+   ============================================ */
+
+/* ---------- Basis-Layout ---------- */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    margin: 0;
+    color: #333;
+}
+
+#app-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    min-height: 600px;
+}
+
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* ---------- Step-Progress ---------- */
+#step-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.step-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    position: relative;
+}
+
+.step-dot:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 60%;
+    right: -40%;
+    height: 2px;
+    background: #ddd;
+    z-index: 0;
+}
+
+.step-dot .circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #ddd;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+.step-dot .label {
+    font-size: 11px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.step-dot.active .circle {
+    background: var(--step-color, #007bff);
+    border-color: var(--step-color, #007bff);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+}
+
+.step-dot.active .label {
+    color: var(--step-color, #007bff);
+    font-weight: bold;
+}
+
+.step-dot.done .circle {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.step-dot.done .label {
+    color: #28a745;
+}
+
+/* ---------- Screens ---------- */
+.screen {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.screen.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Step-Header ---------- */
+.step-header {
+    padding: 20px 25px;
+    border-radius: 10px;
+    border-left: 6px solid var(--step-color, #007bff);
+    background: var(--step-bg, #e6f2ff);
+}
+
+.step-header h2 {
+    margin: 0 0 6px 0;
+    font-size: 22px;
+    color: var(--step-color, #007bff);
+}
+
+.step-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+#screen-ist      { --step-color: #28a745; --step-bg: #e9f7ef; }
+#screen-wunsch   { --step-color: #007bff; --step-bg: #e6f2ff; }
+#screen-verzicht { --step-color: #dc3545; --step-bg: #fbeaec; }
+
+/* ---------- Panel-Labels ---------- */
+.panel-label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--step-color, #333);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: -10px;
+}
+
+.panel-label-extra {
+    color: #888;
+}
+
+.extras-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #ddd, transparent);
+    margin: 15px 0 0 0;
+}
+
+/* ---------- Formulare ---------- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+    max-width: 400px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary,
+.btn-success {
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #007bff;
+    align-self: flex-start;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-success {
+    background: #28a745;
+    align-self: flex-start;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.nav-row {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+}
+
+/* ---------- Button-Panel (Skala) ---------- */
+.button-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.category-row {
+    display: grid;
+    grid-template-columns: 120px repeat(6, 1fr);
+    align-items: stretch;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+}
+
+.category-label {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #777;
+    display: flex;
+    align-items: center;
+}
+
+.action-btn {
+    padding: 8px 5px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+    text-align: center;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.action-btn.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #fafafa;
+}
+
+.interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Extras-Panel: leicht abgesetzt */
+.extras-panel .category-row {
+    background: #fafbfc;
+    border-radius: 8px;
+    padding: 10px;
+    border-bottom: none;
+}
+
+/* ---------- Karten-Zustände ---------- */
+.ist-active {
+    border-color: #28a745;
+    background: #d4edda;
+}
+
+.ist-locked {
+    border-color: #28a745;
+    background: #e9f7ef;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.wunsch-active {
+    border-color: #007bff;
+    background: #cce5ff;
+}
+
+.wunsch-locked {
+    border-color: #007bff;
+    background: #e6f2ff;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.verzicht-active {
+    border-color: #dc3545;
+    background: #f8d7da;
+    color: #721c24;
+    text-decoration: line-through;
+}
+
+/* ---------- Alters-Anzeige ---------- */
+.age-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 30px;
+    align-items: center;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    border: 2px solid #ff6b6b;
+    border-radius: 12px;
+    padding: 25px 35px;
+}
+
+.age-big {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 2px dashed #ffb3b3;
+    padding-right: 20px;
+}
+
+.age-big .age-label-small {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #c92a2a;
+    font-weight: bold;
+}
+
+.age-big .age-number {
+    font-size: 72px;
+    font-weight: bold;
+    color: #ff6b6b;
+    line-height: 1;
+    margin: 5px 0;
+}
+
+.age-big .age-unit {
+    font-size: 14px;
+    color: #888;
+}
+
+.age-bar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.age-bar-horizontal {
+    height: 30px;
+    background: #fff;
+    border: 2px solid #ffb3b3;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.age-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffa8a8 0%, #ff6b6b 100%);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 13px;
+}
+
+.age-markers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #777;
+    padding: 0 5px;
+}
+
+.age-delta {
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    text-align: right;
+}
+
+.age-delta strong {
+    color: #c92a2a;
+    font-style: normal;
+}

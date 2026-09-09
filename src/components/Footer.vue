@@ -7,7 +7,10 @@
       </div>
       <div class="footer-links">
         <a href="https://www.behance.net/danielkling2" target="_blank" rel="noopener">Behance</a>
-        <a href="https://www.linkedin.com/in/daniel-kling" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/daniel-kling-413761235/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.crew-united.com/de/Daniel-Kling_571716.html#!searchterm=Daniel%20kling" target="_blank"
+          rel="noopener">Crew United</a>
+        <a href="https://www.imdb.com/de/name/nm4396803/" target="_blank" rel="noopener">IMDb</a>
       </div>
     </div>
   </footer>

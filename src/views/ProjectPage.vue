@@ -1,10 +1,17 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { projects } from '../data/projects.js'
+import { projects, coverSrcs } from '../data/projects.js'
 
 const route = useRoute()
 const project = computed(() => projects.find(p => p.id === route.params.id))
+
+const coverCandidates = computed(() => coverSrcs(project.value))
+const coverIndex = ref(0)
+const coverSrc = computed(() => coverCandidates.value[Math.min(coverIndex.value, coverCandidates.value.length - 1)])
+const tryNextCover = () => {
+  if (coverIndex.value + 1 < coverCandidates.value.length) coverIndex.value++
+}
 
 const isYouTubeEmbed = (url) => url && url.includes('youtube.com/embed')
 const isLocalVideo = (url) => url && /\.(mp4|webm|ogg)$/i.test(url.split('?')[0])
@@ -26,13 +33,35 @@ const imageItems = computed(() =>
   (project.value.images || []).map(src => ({ type: 'image', src }))
 )
 
+const descriptionItems = computed(() => {
+  const paras = (project.value.description || '').split('\n\n')
+  const embeds = project.value.embeds || []
+  const items = []
+  let embedIndex = 0
+  for (const para of paras) {
+    items.push({ type: 'para', text: para })
+    if (/^The (first|second) tool/i.test(para.trim()) && embeds[embedIndex]) {
+      items.push({ type: 'embed', embed: embeds[embedIndex] })
+      embedIndex++
+    }
+  }
+  return items
+})
+
 const heroBg = ref(null)
 const videoCarouselSection = ref(null)
 const videoCarouselTrack = ref(null)
 const imageCarouselSection = ref(null)
 const imageCarouselTrack = ref(null)
+const wizardSection = ref(null)
 let heroHeight = 0
 let rafId = null
+
+const handleMessage = (e) => {
+  if (e.data === 'dfr-go-portal' && wizardSection.value) {
+    wizardSection.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
 
 const applyParallax = () => {
   const el = heroBg.value
@@ -65,9 +94,15 @@ const updateCarouselSection = (section, track) => {
   const viewportW = window.innerWidth
   const viewportH = window.innerHeight
   const total = Math.max(section.offsetHeight - viewportH, 0)
-  const progress = Math.min(Math.max(-rect.top / total, 0), 1)
+  const raw = Math.min(Math.max(-rect.top / total, 0), 1)
+  const progress = raw * raw * (3 - 2 * raw)
   const maxShift = Math.max(track.scrollWidth - viewportW, 0)
-  track.style.transform = `translate3d(${-progress * maxShift}px, 0, 0)`
+
+  const entryT = Math.min(raw / 0.3, 1)
+  const entry = entryT * entryT * (3 - 2 * entryT)
+  const lift = (1 - entry) * 64
+  const entryScale = 0.92 + 0.08 * entry
+  track.style.transform = `translate3d(${-progress * maxShift}px, ${lift}px, 0) scale(${entryScale})`
 
   const viewportCenter = viewportW / 2
   const items = track.querySelectorAll('.carousel-item')
@@ -103,9 +138,19 @@ const scheduleCarousel = () => {
   })
 }
 
+const onVideoLoaded = (e) => {
+  const video = e.target
+  if (video.videoHeight > video.videoWidth) {
+    const parent = video.closest('.carousel-item') || video.closest('.single-video-item')
+    if (parent) parent.classList.add('portrait')
+  }
+  scheduleCarousel()
+}
+
 onMounted(() => {
   measureHero()
   scheduleCarousel()
+  window.addEventListener('message', handleMessage)
   window.addEventListener('scroll', applyParallax, { passive: true })
   window.addEventListener('resize', measureHero, { passive: true })
   window.addEventListener('scroll', scheduleCarousel, { passive: true })
@@ -115,6 +160,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('message', handleMessage)
   window.removeEventListener('scroll', applyParallax)
   window.removeEventListener('resize', measureHero)
   window.removeEventListener('scroll', scheduleCarousel)
@@ -128,7 +174,7 @@ onUnmounted(() => {
   <div v-if="project" class="project-page">
     <header class="project-hero" v-if="project.cover">
       <div class="hero-bg">
-        <img :src="project.cover" :alt="project.title" class="hero-bg-image" ref="heroBg" />
+        <img :src="coverSrc" :alt="project.title" class="hero-bg-image" ref="heroBg" @error="tryNextCover" />
         <div class="hero-scrim"></div>
       </div>
 
@@ -185,7 +231,19 @@ onUnmounted(() => {
           <section class="section">
             <h2 class="section-title">About</h2>
             <div class="description">
-              <p v-for="(para, i) in project.description.split('\n\n')" :key="i">{{ para }}</p>
+              <template v-for="(item, i) in descriptionItems" :key="i">
+                <p v-if="item.type === 'para'">{{ item.text }}</p>
+                <div v-else class="embed-block">
+                  <h3 class="embed-label">{{ item.embed.label }}</h3>
+                  <iframe
+                    :src="item.embed.src"
+                    :style="{ height: item.embed.height + 'px' }"
+                    class="embed-frame"
+                    loading="lazy"
+                    :title="item.embed.label"
+                  ></iframe>
+                </div>
+              </template>
             </div>
           </section>
         </div>
@@ -215,22 +273,54 @@ onUnmounted(() => {
                 target="_blank"
                 rel="noopener"
                 class="sidebar-link"
+                :class="{ 'figma-link': link.url.includes('figma.com') }"
               >
                 {{ link.label }} &rarr;
               </a>
             </div>
           </div>
-
-          <div class="sidebar-section" v-if="project.behanceUrl">
-            <a :href="project.behanceUrl" target="_blank" rel="noopener" class="behance-link">
-              View on Behance &rarr;
-            </a>
-          </div>
         </aside>
       </div>
     </div>
 
-    <section class="carousel-section video-carousel" v-if="videoItems.length" ref="videoCarouselSection">
+    <div class="project-content exclusive-access" v-if="project.exclusiveEmbed" ref="wizardSection">
+      <h2 class="section-title">Exclusive Access</h2>
+      <div class="embed-block">
+        <h3 class="embed-label">{{ project.exclusiveEmbed.label }}</h3>
+        <iframe
+          :src="project.exclusiveEmbed.src"
+          :style="{ height: project.exclusiveEmbed.height + 'px' }"
+          class="embed-frame"
+          loading="lazy"
+          :title="project.exclusiveEmbed.label"
+        ></iframe>
+      </div>
+    </div>
+
+    <section class="single-video" v-if="videoItems.length === 1">
+      <figure class="single-video-item" :class="videoItems[0].type">
+        <video
+          v-if="videoItems[0].type === 'video'"
+          :src="videoItems[0].src"
+          controls
+          preload="metadata"
+          @loadedmetadata="onVideoLoaded($event)"
+        ></video>
+        <iframe
+          v-else-if="videoItems[0].type === 'youtube'"
+          :src="videoItems[0].src"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <a v-else :href="videoItems[0].src" target="_blank" rel="noopener" class="carousel-link">
+          Watch Video &rarr;
+        </a>
+        <figcaption v-if="videoItems[0].label">{{ videoItems[0].label }}</figcaption>
+      </figure>
+    </section>
+
+    <section class="carousel-section video-carousel" v-if="videoItems.length > 1" ref="videoCarouselSection">
       <div class="carousel-sticky">
         <div class="carousel-track" ref="videoCarouselTrack">
           <figure
@@ -244,7 +334,7 @@ onUnmounted(() => {
               :src="item.src"
               controls
               preload="metadata"
-              @loadedmetadata="scheduleCarousel"
+              @loadedmetadata="onVideoLoaded($event)"
             ></video>
             <iframe
               v-else-if="item.type === 'youtube'"
@@ -427,15 +517,19 @@ onUnmounted(() => {
 .project-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 60px 40px;
+  padding: 32px 40px;
   position: relative;
   z-index: 1;
+}
+
+.exclusive-access {
+  scroll-margin-top: 96px;
 }
 
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 280px;
-  gap: 60px;
+  gap: 40px;
   align-items: start;
 }
 
@@ -461,6 +555,90 @@ onUnmounted(() => {
 
 .description p:last-child {
   margin-bottom: 0;
+}
+
+.embed-block {
+  margin-bottom: 48px;
+}
+
+.embed-block:last-child {
+  margin-bottom: 0;
+}
+
+.embed-label {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.embed-frame {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+.single-video {
+  display: flex;
+  justify-content: center;
+  padding: 0 4vw;
+}
+
+.single-video-item {
+  margin: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.single-video-item.youtube {
+  width: min(calc(78vh * 16 / 9), 84vw);
+  aspect-ratio: 16 / 9;
+}
+
+.single-video-item.video {
+  width: min(calc(78vh * 16 / 9), 84vw);
+  aspect-ratio: 16 / 9;
+}
+
+.single-video-item.portrait {
+  width: auto;
+  height: 78vh;
+  aspect-ratio: auto;
+}
+
+.single-video-item iframe,
+.single-video-item video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #111;
+  object-fit: contain;
+}
+
+.single-video-item.portrait video {
+  height: 78vh;
+  width: auto;
+  object-fit: contain;
+}
+
+.single-video-item figcaption {
+  position: absolute;
+  bottom: -32px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .carousel-section {
@@ -507,6 +685,17 @@ onUnmounted(() => {
 .carousel-item.video,
 .carousel-item.youtube {
   width: min(calc(64vh * 16 / 9), 84vw);
+}
+
+.carousel-item.portrait {
+  width: auto;
+  height: 78vh;
+}
+
+.carousel-item.portrait video {
+  height: 78vh;
+  width: auto;
+  object-fit: contain;
 }
 
 .carousel-item video {
@@ -605,21 +794,18 @@ onUnmounted(() => {
   color: #fff;
 }
 
-.behance-link {
+.sidebar-link.figma-link {
   display: inline-block;
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
+  color: #fff;
   padding: 10px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 100px;
+  font-weight: 500;
   transition: all 0.2s;
 }
 
-.behance-link:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
+.sidebar-link.figma-link:hover {
+  border-color: rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.05);
 }
 

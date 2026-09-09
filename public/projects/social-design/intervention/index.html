@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Design: Die Rush-Hour des Lebens</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div id="app-container">
+        <div class="title">Die Rush-Hour des Lebens</div>
+
+        <!-- Step-Progress -->
+        <div id="step-progress">
+            <div class="step-dot" data-step="1">
+                <div class="circle">1</div>
+                <div class="label">Daten</div>
+            </div>
+            <div class="step-dot" data-step="2">
+                <div class="circle">2</div>
+                <div class="label">Ist</div>
+            </div>
+            <div class="step-dot" data-step="3">
+                <div class="circle">3</div>
+                <div class="label">Wunsch</div>
+            </div>
+            <div class="step-dot" data-step="4">
+                <div class="circle">4</div>
+                <div class="label">Verzicht</div>
+            </div>
+            <div class="step-dot" data-step="5">
+                <div class="circle">5</div>
+                <div class="label">Reflexion</div>
+            </div>
+        </div>
+
+        <!-- SCREEN 1: Demografische Daten -->
+        <div id="screen-1" class="screen active">
+            <div class="step-header" style="--step-color:#666; --step-bg:#f1f3f5;">
+                <h2 style="color:#333;">Schritt 1: Über Dich</h2>
+                <p>Bitte beantworte ein paar Fragen, bevor es losgeht.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Alter</label>
+                <input type="number" id="demo-age" value="20" min="10" max="99">
+            </div>
+
+            <div class="form-group">
+                <label>Geschlecht</label>
+                <select id="demo-gender">
+                    <option value="">Bitte wählen...</option>
+                    <option value="m">Männlich</option>
+                    <option value="w">Weiblich</option>
+                    <option value="d">Divers</option>
+                </select>
+            </div>
+
+            <h3>Lebensplanung</h3>
+
+            <div class="form-group">
+                <label>Wie viele Kinder möchtest du mal haben?</label>
+                <input type="number" id="q1-kids" min="0" value="0">
+            </div>
+
+            <div class="form-group">
+                <label>Wie alt möchtest du sein beim ersten Kind?</label>
+                <input type="number" id="q1-first" min="0">
+            </div>
+
+            <div class="form-group">
+                <label>Wie alt beim letzten Kind?</label>
+                <input type="number" id="q1-last" min="0">
+            </div>
+
+            <div class="nav-row">
+                <button class="btn-primary" onclick="goToScreen('ist')">Weiter ➔</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Ist-Zustand -->
+        <div id="screen-ist" class="screen">
+            <div class="step-header">
+                <h2>Schritt 2: Dein Ist-Zustand</h2>
+                <p>Wo stehst du aktuell im Leben? Klicke die zutreffenden Karten an.</p>
+            </div>
+
+            <div class="panel-label">Skala (beeinflusst dein Alter)</div>
+            <div class="button-panel" id="button-panel-ist"></div>
+
+            <div class="age-card">
+                <div class="age-big">
+                    <div class="age-label-small">Dein Alter</div>
+                    <div class="age-number" id="age-number-ist">20</div>
+                    <div class="age-unit">Jahre</div>
+                </div>
+                <div class="age-bar-section">
+                    <div class="age-bar-horizontal">
+                        <div class="age-bar-fill" id="age-fill-ist" style="width: 0%;"></div>
+                    </div>
+                    <div class="age-markers" id="age-markers-ist"></div>
+                    <div class="age-delta" id="age-delta-ist"></div>
+                </div>
+            </div>
+
+            <div class="extras-divider"></div>
+            <div class="panel-label panel-label-extra">Zusatzangaben</div>
+            <div class="button-panel extras-panel" id="extras-cumulative-ist"></div>
+            <div class="button-panel extras-panel" id="extras-single-ist"></div>
+
+            <div class="nav-row">
+                <button class="btn-primary" onclick="goToScreen('wunsch')">Weiter ➔</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Wunsch-Zustand -->
+        <div id="screen-wunsch" class="screen">
+            <div class="step-header">
+                <h2>Schritt 3: Dein Wunsch-Zustand</h2>
+                <p>Was möchtest du erreichen? Wähle deine Ziele aus.</p>
+            </div>
+
+            <div class="panel-label">Skala (beeinflusst dein Alter)</div>
+            <div class="button-panel" id="button-panel-wunsch"></div>
+
+            <div class="age-card">
+                <div class="age-big">
+                    <div class="age-label-small">Dein Alter</div>
+                    <div class="age-number" id="age-number-wunsch">20</div>
+                    <div class="age-unit">Jahre</div>
+                </div>
+                <div class="age-bar-section">
+                    <div class="age-bar-horizontal">
+                        <div class="age-bar-fill" id="age-fill-wunsch" style="width: 0%;"></div>
+                    </div>
+                    <div class="age-markers" id="age-markers-wunsch"></div>
+                    <div class="age-delta" id="age-delta-wunsch"></div>
+                </div>
+            </div>
+
+            <div class="extras-divider"></div>
+            <div class="panel-label panel-label-extra">Zusatzangaben</div>
+            <div class="button-panel extras-panel" id="extras-cumulative-wunsch"></div>
+            <div class="button-panel extras-panel" id="extras-single-wunsch"></div>
+
+            <div class="nav-row">
+                <button class="btn-primary" onclick="goToScreen('verzicht')">Weiter ➔</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: Verzicht -->
+        <div id="screen-verzicht" class="screen">
+            <div class="step-header">
+                <h2>Schritt 4: Der Verzicht</h2>
+                <p>Dein Alter ist gestiegen. Wähle blaue Karten ab (werden rot), um Zeit/Alter zu sparen.</p>
+            </div>
+
+            <div class="panel-label">Skala (beeinflusst dein Alter)</div>
+            <div class="button-panel" id="button-panel-verzicht"></div>
+
+            <div class="age-card">
+                <div class="age-big">
+                    <div class="age-label-small">Dein Alter</div>
+                    <div class="age-number" id="age-number-verzicht">20</div>
+                    <div class="age-unit">Jahre</div>
+                </div>
+                <div class="age-bar-section">
+                    <div class="age-bar-horizontal">
+                        <div class="age-bar-fill" id="age-fill-verzicht" style="width: 0%;"></div>
+                    </div>
+                    <div class="age-markers" id="age-markers-verzicht"></div>
+                    <div class="age-delta" id="age-delta-verzicht"></div>
+                </div>
+            </div>
+
+            <div class="extras-divider"></div>
+            <div class="panel-label panel-label-extra">Zusatzangaben</div>
+            <div class="button-panel extras-panel" id="extras-cumulative-verzicht"></div>
+            <div class="button-panel extras-panel" id="extras-single-verzicht"></div>
+
+            <div class="nav-row">
+                <button class="btn-primary" onclick="goToScreen('reflexion')">Weiter ➔</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 5: Reflexion -->
+        <div id="screen-5" class="screen">
+            <div class="step-header" style="--step-color:#666; --step-bg:#f1f3f5;">
+                <h2 style="color:#333;">Schritt 5: Reflexion</h2>
+                <p>Hat sich durch die Visualisierung etwas an deiner Planung geändert?</p>
+            </div>
+
+            <div class="form-group">
+                <label>Wie viele Kinder möchtest du mal haben?</label>
+                <input type="number" id="q2-kids" min="0">
+            </div>
+
+            <div class="form-group">
+                <label>Wie alt möchtest du sein beim ersten Kind?</label>
+                <input type="number" id="q2-first" min="0">
+            </div>
+
+            <div class="form-group">
+                <label>Wie alt beim letzten Kind?</label>
+                <input type="number" id="q2-last" min="0">
+            </div>
+
+            <div class="nav-row">
+                <button class="btn-success" onclick="submitData()">Experiment abschließen & Speichern</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

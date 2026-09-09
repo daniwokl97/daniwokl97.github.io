@@ -1,16 +1,29 @@
 <script setup>
-defineProps({
+import { ref } from 'vue'
+import { coverSrcs } from '../data/projects.js'
+
+const props = defineProps({
   project: {
     type: Object,
     required: true,
   },
 })
+
+const srcs = coverSrcs(props.project)
+const srcIndex = ref(0)
+const src = ref(srcs[0])
+const tryNextSrc = () => {
+  if (srcIndex.value + 1 < srcs.length) {
+    srcIndex.value++
+    src.value = srcs[srcIndex.value]
+  }
+}
 </script>
 
 <template>
   <router-link :to="{ name: 'Project', params: { id: project.id } }" class="project-card">
     <div class="card-image-wrapper">
-      <img :src="project.cover" :alt="project.title" class="card-image" loading="lazy" />
+      <img :src="src" :alt="project.title" class="card-image" loading="lazy" @error="tryNextSrc" />
       <div class="card-overlay">
         <span class="view-project">View Project</span>
       </div>
