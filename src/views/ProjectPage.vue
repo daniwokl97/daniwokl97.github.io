@@ -29,9 +29,17 @@ const videoItems = computed(() =>
   })
 )
 
-const imageItems = computed(() =>
-  (project.value.images || []).map(src => ({ type: 'image', src }))
-)
+const imageCarousels = computed(() => {
+  if (project.value?.imageRows?.length) {
+    return project.value.imageRows.map(row => ({
+      items: row.map(src => ({ type: 'image', src })),
+    }))
+  }
+  if (project.value?.images?.length) {
+    return [{ items: project.value.images.map(src => ({ type: 'image', src })) }]
+  }
+  return []
+})
 
 const descriptionItems = computed(() => {
   const paras = (project.value.description || '').split('\n\n')
@@ -48,14 +56,30 @@ const descriptionItems = computed(() => {
   return items
 })
 
+const imageAlt = (groupIndex, itemIndex) => {
+  const before = imageCarousels.value
+    .slice(0, groupIndex)
+    .reduce((n, g) => n + g.items.length, 0)
+  return `${project.value.title} - Image ${before + itemIndex + 1}`
+}
+
 const heroBg = ref(null)
 const videoCarouselSection = ref(null)
 const videoCarouselTrack = ref(null)
-const imageCarouselSection = ref(null)
-const imageCarouselTrack = ref(null)
+const imageCarouselSections = ref([])
+const imageCarouselTracks = ref([])
+const setImageSection = (index) => (el) => {
+  if (el) imageCarouselSections.value[index] = el
+  else delete imageCarouselSections.value[index]
+}
+const setImageTrack = (index) => (el) => {
+  if (el) imageCarouselTracks.value[index] = el
+  else delete imageCarouselTracks.value[index]
+}
 const wizardSection = ref(null)
 let heroHeight = 0
 let rafId = null
+const CAROUSEL_FULL_SCALE = 1.6
 
 const handleMessage = (e) => {
   if (e.data === 'dfr-go-portal' && wizardSection.value) {
@@ -85,11 +109,21 @@ const measureCarouselSection = (section, track) => {
   const trackWidth = track.scrollWidth
   const viewportW = window.innerWidth
   const viewportH = window.innerHeight
-  section.style.height = `${Math.max(trackWidth - viewportW, 0) + viewportH}px`
+  const fits = trackWidth <= viewportW
+  section.classList.toggle('carousel-static', fits)
+  section.style.height = fits ? 'auto' : `${Math.max(trackWidth - viewportW, 0) + viewportH}px`
 }
 
 const updateCarouselSection = (section, track) => {
   if (!section || !track) return
+  if (section.classList.contains('carousel-static')) {
+    track.style.transform = ''
+    for (const el of track.querySelectorAll('.carousel-item')) {
+      el.style.transform = ''
+      el.style.zIndex = ''
+    }
+    return
+  }
   const rect = section.getBoundingClientRect()
   const viewportW = window.innerWidth
   const viewportH = window.innerHeight
@@ -113,7 +147,7 @@ const updateCarouselSection = (section, track) => {
     const maxDist = viewportW / 2 + r.width / 2
     const t = Math.max(0, 1 - dist / maxDist)
     const smooth = t * t * (3 - 2 * t)
-    const scale = 1 + 0.12 * smooth
+    const scale = 1 + (CAROUSEL_FULL_SCALE - 1) * smooth
     el.style.transform = `scale(${scale})`
     el.style.zIndex = Math.round(smooth * 10)
   }
@@ -121,12 +155,16 @@ const updateCarouselSection = (section, track) => {
 
 const measureCarousel = () => {
   measureCarouselSection(videoCarouselSection.value, videoCarouselTrack.value)
-  measureCarouselSection(imageCarouselSection.value, imageCarouselTrack.value)
+  imageCarouselSections.value.forEach((section, i) => {
+    measureCarouselSection(section, imageCarouselTracks.value[i])
+  })
 }
 
 const updateCarousel = () => {
   updateCarouselSection(videoCarouselSection.value, videoCarouselTrack.value)
-  updateCarouselSection(imageCarouselSection.value, imageCarouselTrack.value)
+  imageCarouselSections.value.forEach((section, i) => {
+    updateCarouselSection(section, imageCarouselTracks.value[i])
+  })
 }
 
 const scheduleCarousel = () => {
@@ -365,18 +403,23 @@ onUnmounted(() => {
       </section>
     </div>
 
-    <section class="carousel-section image-carousel" v-if="imageItems.length" ref="imageCarouselSection">
+    <section
+      v-for="(group, gi) in imageCarousels"
+      :key="gi"
+      class="carousel-section image-carousel"
+      :ref="setImageSection(gi)"
+    >
       <div class="carousel-sticky">
-        <div class="carousel-track" ref="imageCarouselTrack">
+        <div class="carousel-track" :ref="setImageTrack(gi)">
           <figure
-            v-for="(item, i) in imageItems"
+            v-for="(item, i) in group.items"
             :key="i"
             class="carousel-item"
             :class="item.type"
           >
             <img
               :src="item.src"
-              :alt="`${project.title} - Image ${i + 1}`"
+              :alt="imageAlt(gi, i)"
               @load="scheduleCarousel"
             />
           </figure>
@@ -674,10 +717,21 @@ onUnmounted(() => {
   align-items: center;
 }
 
+.carousel-section.carousel-static {
+  height: auto !important;
+}
+
+.carousel-section.carousel-static .carousel-sticky {
+  position: static;
+  height: auto;
+  overflow: visible;
+  padding: 80px 0;
+}
+
 .carousel-track {
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: 140px;
   padding: 0 8vw;
   will-change: transform;
 }
@@ -686,11 +740,17 @@ onUnmounted(() => {
   margin: 0;
   position: relative;
   flex: 0 0 auto;
-  height: 64vh;
+  height: 40vh;
   display: flex;
   align-items: center;
   justify-content: center;
   will-change: transform;
+}
+
+.carousel-item:hover {
+  transform: scale(1.6) !important;
+  z-index: 30 !important;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .carousel-item img {
@@ -704,16 +764,16 @@ onUnmounted(() => {
 
 .carousel-item.video,
 .carousel-item.youtube {
-  width: min(calc(64vh * 16 / 9), 84vw);
+  width: min(calc(40vh * 16 / 9), 52.5vw);
 }
 
 .carousel-item.portrait {
   width: auto;
-  height: 78vh;
+  height: 49vh;
 }
 
 .carousel-item.portrait video {
-  height: 78vh;
+  height: 49vh;
   width: auto;
   object-fit: contain;
 }
@@ -861,12 +921,16 @@ onUnmounted(() => {
   }
 
   .carousel-item {
-    height: 52vh;
+    height: 32vh;
+  }
+
+  .carousel-track {
+    gap: 96px;
   }
 
   .carousel-item.video,
   .carousel-item.youtube {
-    width: min(calc(52vh * 16 / 9), 84vw);
+    width: min(calc(32vh * 16 / 9), 52.5vw);
   }
 }
 
@@ -893,21 +957,25 @@ onUnmounted(() => {
   }
 
   .carousel-track {
-    gap: 28px;
+    gap: 48px;
     padding: 0 12vw;
   }
 
+  .carousel-section.carousel-static .carousel-sticky {
+    padding: 64px 0;
+  }
+
   .carousel-item {
-    height: 42vh;
+    height: 26vh;
   }
 
   .carousel-item img {
-    max-width: 80vw;
+    max-width: 50vw;
   }
 
   .carousel-item.video,
   .carousel-item.youtube {
-    width: min(calc(42vh * 16 / 9), 84vw);
+    width: min(calc(26vh * 16 / 9), 52.5vw);
   }
 
   .carousel-item figcaption {

@@ -109,7 +109,7 @@ const experience = [
     period: '2020 – 2022',
     title: 'Freelance',
     org: '',
-    detail: 'Camera work for documentary films · Audio post-production of reports',
+    detail: 'Audio recording and post-production for documentary films',
     year: 2020,
     logo: '',
   },
