@@ -123,7 +123,7 @@ The recordings follow his experiences in school, his memories of everyday life, 
 
 I was responsible for the audio recording, mixing and sound design. Crafting this project was deeply meaningful, as it allowed me to help preserve and share my grandfather's story. Especially in today's times, this kind of personal testimony feels like a valuable and important resource — a reminder of the responsibility that comes with memory and storytelling.`,
     tools: ['Pro Tools'],
-    images: [],
+    images: ['/projects/zeit-mit-wunden/bookcover.jpg'],
     videos: [
       'https://www.youtube.com/embed/MpG8U5bUxZc?si=AvFSpYWEV0fjXhfX&start=957',
     ],
@@ -178,7 +178,6 @@ For the game Symblings, I was responsible for foleys, sound design and mixing, h
 In this project, I worked with a team using Figma to create the app's design and functionality. We invested a lot of time exploring the issue that ADHD is often mentioned, but many people don't fully understand what it is or the real challenges that individuals with ADHD face. Through iterative processes and collaboration, we worked to ensure the app accurately reflects these struggles while keeping the experience intuitive and informative.`,
     tools: ['Figma', 'Adobe Illustrator CC'],
     images: [
-      '/projects/empathize/img-1.jpg',
       '/projects/empathize/img-2.jpg',
       '/projects/empathize/img-3.jpg',
       '/projects/empathize/img-4.jpg',
@@ -213,23 +212,28 @@ This Figma prototype gives a glimpse into how the website might feel. The user i
 
 I developed the complete brand identity including logo, typography, color palette, and packaging system. The modular packaging concept brings together individual products into a unified visual composition.`,
     tools: ['Adobe Photoshop', 'Adobe Illustrator', 'Adobe Dimension', 'Adobe Firefly', 'Blender 3D', 'Figma'],
-    images: [
-      '/projects/anymane/img-1.png',
-      '/projects/anymane/img-2.gif',
-      '/projects/anymane/img-3.gif',
-      '/projects/anymane/img-4.gif',
-      '/projects/anymane/img-5.gif',
-      '/projects/anymane/img-6.png',
-      '/projects/anymane/img-7.png',
-      '/projects/anymane/img-8.png',
-      '/projects/anymane/img-9.png',
-      '/projects/anymane/img-10.png',
-      '/projects/anymane/img-11.png',
-      '/projects/anymane/img-12.png',
-      '/projects/anymane/img-13.png',
-      '/projects/anymane/img-14.png',
-      '/projects/anymane/img-15.png',
-      '/projects/anymane/img-16.png',
+    imageRows: [
+      [
+        '/projects/anymane/img-2.gif',
+        '/projects/anymane/img-3.gif',
+        '/projects/anymane/img-4.gif',
+        '/projects/anymane/img-5.gif',
+      ],
+      [
+        '/projects/anymane/img-6.png',
+        '/projects/anymane/img-7.png',
+        '/projects/anymane/img-8.png',
+        '/projects/anymane/img-9.png',
+      ],
+      [
+        '/projects/anymane/img-10.png',
+        '/projects/anymane/img-11.png',
+        '/projects/anymane/img-12.png',
+        '/projects/anymane/img-13.png',
+        '/projects/anymane/img-14.png',
+        '/projects/anymane/img-15.png',
+        '/projects/anymane/img-16.png',
+      ],
     ],
     videos: ['/projects/anymane/anymane_oneline.mp4'],
     externalLinks: [
@@ -256,10 +260,8 @@ In the VR game project, I was primarily responsible for sound organization, over
       '/projects/corvus-sanctum/img-2.jpg',
       '/projects/corvus-sanctum/img-3.jpg',
     ],
-    videos: [],
-    externalLinks: [
-      { label: 'HdM Project Page', url: 'https://hdm-stuttgart.de/mediathek/projectpage/4584/details' },
-    ],
+    videos: ['/projects/corvus-sanctum/trailer.mp4'],
+    externalLinks: [],
     behanceUrl: 'https://www.behance.net/gallery/234329779/Sound-Code-for-Corvus-Sanctum',
   },
   {
@@ -408,7 +410,7 @@ In the development of Spoonergy, I conducted extensive user research, including 
       '/projects/spoonergy/img-1.jpg',
       '/projects/spoonergy/img-2.jpg',
     ],
-    videos: ['https://www-ccv.adobe.io/v1/player/ccv/5KQrBvrw4u7/embed?api_key=behance1&bgcolor=%23191919'],
+    videos: ['/projects/spoonergy/ConceptVideo_Spoonergy_DanielKling_1.mp4'],
     externalLinks: [
       { label: 'Figma Prototype', url: 'https://www.figma.com/proto/9tDLx9Oi4w5VVDd4zsiZCp/Spoonergy?page-id=0%3A1&node-id=3-536&starting-point-node-id=3%3A536' },
     ],
@@ -493,7 +495,7 @@ This production was very close to my heart, as I believe biodiversity is incredi
 We combined observations, questionnaires, and interviews. After completing the hearing test, participants described their experiences using the Think Aloud method and evaluated the apps with the User Experience Questionnaire (UEQ). To avoid bias, we alternated the app order. Finally, we conducted interviews for an in-depth analysis of the user experience.`,
     tools: ['Microsoft PowerPoint', 'Microsoft Excel'],
     images: [],
-    videos: [],
+    videos: ['https://www.youtube.com/embed/Wnqw-yt5JZY?si=UAS2EkZVkhX5qQaO'],
     externalLinks: [],
     behanceUrl: 'https://www.behance.net/gallery/234343959/UX-study-on-Audiogram-Apps',
   },
