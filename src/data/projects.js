@@ -314,6 +314,7 @@ I was responsible for foley, sound design, and mixing on this project at Filmaka
       '/projects/maertyrer-der-strebsamkeit/img-4.jpg',
     ],
     videos: [
+      'https://www.youtube.com/watch?v=bIOTgpXgYuA',
       'https://www.youtube.com/embed/0fxnmI4kTzc?si=8xAFR3Tt548gxxiz',
     ],
     externalLinks: [],
